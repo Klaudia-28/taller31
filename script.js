@@ -1,5 +1,10 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
+
+ctx.translate(0, canvas.height);
+ctx.scale(1, -1);
+
+let currentScene = 0;
 const scenes = [
 
     // Caso 1: completamente dentro
@@ -15,7 +20,7 @@ const scenes = [
 ];
 function drawViewport(xmin, ymin, xmax, ymax){
 
-    ctx.strokeStyle = "blue";
+    ctx.strokeStyle = "black";
     ctx.lineWidth = 2;
 
     ctx.strokeRect(
@@ -43,8 +48,8 @@ function computeCode(x, y, xmin, ymin, xmax, ymax){
 
     const LEFT = 1;
     const RIGHT = 2;
-    const BOTTOM = 4;
-    const TOP = 8;
+    const TOP = 4;
+    const BOTTOM = 8;
 
     if(x < xmin){
         code |= LEFT;
@@ -68,8 +73,8 @@ function cohenSutherland(x1, y1, x2, y2, xmin, ymin, xmax, ymax){
 
     const LEFT = 1;
     const RIGHT = 2;
-    const BOTTOM = 4;
-    const TOP = 8;
+    const TOP = 4;
+    const BOTTOM = 8;
 
     let code1 = computeCode(x1, y1, xmin, ymin, xmax, ymax);
     let code2 = computeCode(x2, y2, xmin, ymin, xmax, ymax);
@@ -78,12 +83,14 @@ function cohenSutherland(x1, y1, x2, y2, xmin, ymin, xmax, ymax){
 
     while(true){
 
+        //ambos puntos dentro
         if((code1 | code2) === 0){
 
             accept = true;
             break;
         }
 
+        //ambos puntos fuera en misma región
         else if((code1 & code2) !== 0){
 
             break;
@@ -96,28 +103,34 @@ function cohenSutherland(x1, y1, x2, y2, xmin, ymin, xmax, ymax){
 
             if(code1 !== 0){
                 codeOut = code1;
-            }else{
+            }
+
+            else{
                 codeOut = code2;
             }
 
+            // TOP
             if(codeOut & TOP){
 
                 x = x1 + (x2 - x1) * (ymin - y1) / (y2 - y1);
                 y = ymin;
             }
 
+            // BOTTOM
             else if(codeOut & BOTTOM){
 
                 x = x1 + (x2 - x1) * (ymax - y1) / (y2 - y1);
                 y = ymax;
             }
 
+            // RIGHT
             else if(codeOut & RIGHT){
 
                 y = y1 + (y2 - y1) * (xmax - x1) / (x2 - x1);
                 x = xmax;
             }
 
+            // LEFT
             else if(codeOut & LEFT){
 
                 y = y1 + (y2 - y1) * (xmin - x1) / (x2 - x1);
@@ -129,7 +142,14 @@ function cohenSutherland(x1, y1, x2, y2, xmin, ymin, xmax, ymax){
                 x1 = x;
                 y1 = y;
 
-                code1 = computeCode(x1, y1, xmin, ymin, xmax, ymax);
+                code1 = computeCode(
+                    x1,
+                    y1,
+                    xmin,
+                    ymin,
+                    xmax,
+                    ymax
+                );
             }
 
             else{
@@ -137,14 +157,21 @@ function cohenSutherland(x1, y1, x2, y2, xmin, ymin, xmax, ymax){
                 x2 = x;
                 y2 = y;
 
-                code2 = computeCode(x2, y2, xmin, ymin, xmax, ymax);
+                code2 = computeCode(
+                    x2,
+                    y2,
+                    xmin,
+                    ymin,
+                    xmax,
+                    ymax
+                );
             }
         }
     }
 
     if(accept){
 
-        return {
+        return{
             visible: true,
             x1,
             y1,
@@ -153,7 +180,7 @@ function cohenSutherland(x1, y1, x2, y2, xmin, ymin, xmax, ymax){
         };
     }
 
-    return {
+    return{
         visible: false
     };
 }
@@ -170,7 +197,7 @@ function render(){
     drawViewport(xmin, ymin, xmax, ymax);
 
     const line = scenes[currentScene];
-
+    //línea original
     drawLine(
         line.x1,
         line.y1,
@@ -178,7 +205,6 @@ function render(){
         line.y2,
         "red"
     );
-
     const result = cohenSutherland(
         line.x1,
         line.y1,
@@ -189,9 +215,8 @@ function render(){
         xmax,
         ymax
     );
-
+    //parte visible
     if(result.visible){
-
         drawLine(
             result.x1,
             result.y1,
@@ -205,12 +230,11 @@ function render(){
     }
 
     else{
-
         document.getElementById("caseText").innerText =
             "Línea rechazada";
     }
 }
-
+//botón siguiente
 document.getElementById("next").addEventListener("click", () => {
 
     currentScene++;
@@ -221,7 +245,7 @@ document.getElementById("next").addEventListener("click", () => {
 
     render();
 });
-
+//botón anterior
 document.getElementById("prev").addEventListener("click", () => {
 
     currentScene--;
@@ -232,7 +256,7 @@ document.getElementById("prev").addEventListener("click", () => {
 
     render();
 });
-
+//actualizar viewport
 document.getElementById("update").addEventListener("click", render);
-
+//render inicial
 render();
