@@ -64,3 +64,96 @@ function computeCode(x, y, xmin, ymin, xmax, ymax){
 
     return code;
 }
+function cohenSutherland(x1, y1, x2, y2, xmin, ymin, xmax, ymax){
+
+    const LEFT = 1;
+    const RIGHT = 2;
+    const BOTTOM = 4;
+    const TOP = 8;
+
+    let code1 = computeCode(x1, y1, xmin, ymin, xmax, ymax);
+    let code2 = computeCode(x2, y2, xmin, ymin, xmax, ymax);
+
+    let accept = false;
+
+    while(true){
+
+        if((code1 | code2) === 0){
+
+            accept = true;
+            break;
+        }
+
+        else if((code1 & code2) !== 0){
+
+            break;
+        }
+
+        else{
+
+            let codeOut;
+            let x, y;
+
+            if(code1 !== 0){
+                codeOut = code1;
+            }else{
+                codeOut = code2;
+            }
+
+            if(codeOut & TOP){
+
+                x = x1 + (x2 - x1) * (ymin - y1) / (y2 - y1);
+                y = ymin;
+            }
+
+            else if(codeOut & BOTTOM){
+
+                x = x1 + (x2 - x1) * (ymax - y1) / (y2 - y1);
+                y = ymax;
+            }
+
+            else if(codeOut & RIGHT){
+
+                y = y1 + (y2 - y1) * (xmax - x1) / (x2 - x1);
+                x = xmax;
+            }
+
+            else if(codeOut & LEFT){
+
+                y = y1 + (y2 - y1) * (xmin - x1) / (x2 - x1);
+                x = xmin;
+            }
+
+            if(codeOut === code1){
+
+                x1 = x;
+                y1 = y;
+
+                code1 = computeCode(x1, y1, xmin, ymin, xmax, ymax);
+            }
+
+            else{
+
+                x2 = x;
+                y2 = y;
+
+                code2 = computeCode(x2, y2, xmin, ymin, xmax, ymax);
+            }
+        }
+    }
+
+    if(accept){
+
+        return {
+            visible: true,
+            x1,
+            y1,
+            x2,
+            y2
+        };
+    }
+
+    return {
+        visible: false
+    };
+}
