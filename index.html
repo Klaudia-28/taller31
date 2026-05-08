@@ -4,10 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Algoritmo Cohen-Sutherland</title>
-</head>
-<body>
-    <style>
 
+    <style>
         body{
             font-family: Arial, sans-serif;
             text-align: center;
@@ -31,7 +29,38 @@
         input{
             width: 60px;
         }
-
     </style>
+</head>
+<body>
+
+    <h1>Algoritmo de Cohen-Sutherland</h1>
+
+    <div class="controls">
+        <label>Xmin:</label>
+        <input type="number" id="xmin" value="150">
+        <label>Ymin:</label>
+        <input type="number" id="ymin" value="100">
+        <label>Xmax:</label>
+        <input type="number" id="xmax" value="450">
+        <label>Ymax:</label>
+        <input type="number" id="ymax" value="300">
+        <button id="update">Actualizar Viewport</button>
+
+    </div>
+
+    <canvas id="canvas" width="600" height="400"></canvas>
+
+    <div class="buttons">
+
+        <button id="prev">Anterior</button>
+        <button id="next">Siguiente</button>
+
+    </div>
+
+    <p id="caseText"></p>
+
+    <script src="script.js"></script>
+
 </body>
+
 </html>
