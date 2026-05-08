@@ -157,3 +157,82 @@ function cohenSutherland(x1, y1, x2, y2, xmin, ymin, xmax, ymax){
         visible: false
     };
 }
+
+function render(){
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const xmin = parseInt(document.getElementById("xmin").value);
+    const ymin = parseInt(document.getElementById("ymin").value);
+    const xmax = parseInt(document.getElementById("xmax").value);
+    const ymax = parseInt(document.getElementById("ymax").value);
+
+    drawViewport(xmin, ymin, xmax, ymax);
+
+    const line = scenes[currentScene];
+
+    drawLine(
+        line.x1,
+        line.y1,
+        line.x2,
+        line.y2,
+        "red"
+    );
+
+    const result = cohenSutherland(
+        line.x1,
+        line.y1,
+        line.x2,
+        line.y2,
+        xmin,
+        ymin,
+        xmax,
+        ymax
+    );
+
+    if(result.visible){
+
+        drawLine(
+            result.x1,
+            result.y1,
+            result.x2,
+            result.y2,
+            "green"
+        );
+
+        document.getElementById("caseText").innerText =
+            "Línea aceptada parcialmente o totalmente";
+    }
+
+    else{
+
+        document.getElementById("caseText").innerText =
+            "Línea rechazada";
+    }
+}
+
+document.getElementById("next").addEventListener("click", () => {
+
+    currentScene++;
+
+    if(currentScene >= scenes.length){
+        currentScene = 0;
+    }
+
+    render();
+});
+
+document.getElementById("prev").addEventListener("click", () => {
+
+    currentScene--;
+
+    if(currentScene < 0){
+        currentScene = scenes.length - 1;
+    }
+
+    render();
+});
+
+document.getElementById("update").addEventListener("click", render);
+
+render();
