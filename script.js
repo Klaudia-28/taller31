@@ -13,3 +13,15 @@ const scenes = [
     // Caso 5: atraviesa toda la ventana
     { x1: 50, y1: 50, x2: 550, y2: 350 }
 ];
+function drawViewport(xmin, ymin, xmax, ymax){
+
+    ctx.strokeStyle = "blue";
+    ctx.lineWidth = 2;
+
+    ctx.strokeRect(
+        xmin,
+        ymin,
+        xmax - xmin,
+        ymax - ymin
+    );
+}
