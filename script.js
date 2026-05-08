@@ -37,3 +37,30 @@ function drawLine(x1, y1, x2, y2, color){
 
     ctx.stroke();
 }
+function computeCode(x, y, xmin, ymin, xmax, ymax){
+
+    let code = 0;
+
+    const LEFT = 1;
+    const RIGHT = 2;
+    const BOTTOM = 4;
+    const TOP = 8;
+
+    if(x < xmin){
+        code |= LEFT;
+    }
+
+    if(x > xmax){
+        code |= RIGHT;
+    }
+
+    if(y < ymin){
+        code |= TOP;
+    }
+
+    if(y > ymax){
+        code |= BOTTOM;
+    }
+
+    return code;
+}
