@@ -189,10 +189,16 @@ function render(){
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    const xmin = parseInt(document.getElementById("xmin").value);
-    const ymin = parseInt(document.getElementById("ymin").value);
-    const xmax = parseInt(document.getElementById("xmax").value);
-    const ymax = parseInt(document.getElementById("ymax").value);
+const x1 = parseInt(document.getElementById("xmin").value);
+const y1 = parseInt(document.getElementById("ymin").value);
+const x2 = parseInt(document.getElementById("xmax").value);
+const y2 = parseInt(document.getElementById("ymax").value);
+
+const xmin = Math.min(x1, x2);
+const xmax = Math.max(x1, x2);
+
+const ymin = Math.min(y1, y2);
+const ymax = Math.max(y1, y2);
 
     drawViewport(xmin, ymin, xmax, ymax);
 
